@@ -3,9 +3,10 @@ import { useState } from 'react'
 export default function Home() {
   const [selectedParcel, setSelectedParcel] = useState(null)
 
+  // Példa parcellák a Hold térképen
   const parcels = [
-    { id: 1, status: 'Occupied', holder: 'American Celestial Research Ltd.' },
-    { id: 2, status: 'Available', holder: 'Unassigned' },
+    { id: 1, top: '20%', left: '30%', status: 'Occupied', holder: 'American Celestial Research Ltd.' },
+    { id: 2, top: '50%', left: '60%', status: 'Available', holder: 'Unassigned' },
   ]
 
   const handlePurchase = async () => {
@@ -26,25 +27,37 @@ export default function Home() {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px', textAlign: 'center' }}>
       <h1>Reserve Your Place on the Moon</h1>
       <p>Humanity is returning to the Moon. Legal frameworks will evolve. Secure a speculative pre-emptive position today.</p>
 
-      <h2>Select a Lunar Parcel</h2>
-      <ul>
+      <h2>Lunar Surface Map</h2>
+      <div style={{ position: 'relative', display: 'inline-block' }}>
+        <img src="/moon.jpg" alt="Moon Map" style={{ width: '600px', height: '600px', borderRadius: '8px' }} />
         {parcels.map(parcel => (
-          <li key={parcel.id} style={{ margin: '10px 0' }}>
-            <button
-              style={{ backgroundColor: selectedParcel?.id === parcel.id ? '#3c649e' : '#4f83cc' }}
-              onClick={() => setSelectedParcel(parcel)}
-            >
-              Parcel #{parcel.id} - {parcel.status} ({parcel.holder})
-            </button>
-          </li>
+          <div
+            key={parcel.id}
+            onClick={() => setSelectedParcel(parcel)}
+            style={{
+              position: 'absolute',
+              top: parcel.top,
+              left: parcel.left,
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              backgroundColor: selectedParcel?.id === parcel.id ? 'lime' : parcel.status === 'Available' ? 'yellow' : 'red',
+              transform: 'translate(-50%, -50%)',
+              cursor: 'pointer',
+              border: '2px solid white'
+            }}
+            title={`Parcel #${parcel.id} - ${parcel.status} (${parcel.holder})`}
+          />
         ))}
-      </ul>
+      </div>
 
-      <button onClick={handlePurchase} style={{ marginTop: '20px' }}>Acquire Pre-Emptive Right</button>
+      <div style={{ marginTop: '20px' }}>
+        <button onClick={handlePurchase}>Acquire Pre-Emptive Right</button>
+      </div>
 
       <p style={{ marginTop: '20px', fontSize: '14px' }}>
         No ownership is granted under current international law (Outer Space Treaty, 1967).
