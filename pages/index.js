@@ -1,71 +1,79 @@
 import Head from "next/head";
+import { useState } from "react";
 
 export default function Home() {
-  async function buy(parcelId) {
+  const [selected, setSelected] = useState(null);
+
+  async function buy() {
+    if (!selected) {
+      alert("Please select a parcel on the map first.");
+      return;
+    }
+
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ parcelId })
+      body: JSON.stringify({ parcel: selected })
     });
+
     const data = await res.json();
-    if (data.url) window.location = data.url;
-    else alert("Payment initialization failed.");
+    if (data.url) window.location.href = data.url;
+    else alert(data.error || "Payment failed");
   }
 
   return (
     <>
       <Head>
         <title>Lunar Pre-Emptive Rights</title>
-        <meta name="description" content="Secure a speculative pre-emptive position on lunar surface usage in anticipation of future space law frameworks." />
-        <meta name="keywords" content="moon land, lunar land, space law, preemptive rights, future ownership, Elon Musk space, moon economy" />
+        <meta
+          name="description"
+          content="A speculative pre-emptive registration platform anticipating future lunar legal frameworks."
+        />
+        <meta
+          name="keywords"
+          content="moon land, lunar land, space law, future ownership, preemptive rights, Elon Musk space"
+        />
       </Head>
 
-      <div className="container">
+      <main className="container">
         <section className="hero">
-          <div>
-            <h1>Reserve Your Place on the Moon</h1>
-            <p>
-              Humanity is returning to the Moon. Legal frameworks will evolve.
-              This platform allows individuals to secure a documented,
-              speculative pre-emptive position tied to specific lunar coordinates.
-            </p>
-            <p>
-              <strong>No ownership is granted today.</strong><br/>
-              This service exists in anticipation of future international legal change.
-            </p>
-          </div>
-          <img src="/moon.jpg" alt="Lunar surface map" />
+          <h1>Reserve Your Place on the Moon</h1>
+          <p className="lead">
+            Humanity is returning to the Moon. Laws will follow.
+            Secure a documented speculative position today.
+          </p>
         </section>
 
-        <h2>Available Parcels</h2>
+        <section className="map">
+          <h2>Select a Lunar Parcel</h2>
+          <img
+            src="/moon.jpg"
+            alt="Lunar map"
+            onClick={() => setSelected("Parcel-002")}
+            className={selected ? "map selected" : "map"}
+          />
+          {selected && <p className="selected">Selected: {selected}</p>}
+        </section>
 
-        <div className="parcel occupied">
-          <strong>Parcel #001</strong><br/>
-          Status: Occupied<br/>
-          Holder: American Celestial Research Ltd.
-        </div>
-
-        <div className="parcel available">
-          <strong>Parcel #002</strong><br/>
-          Status: Available<br/>
-          <button onClick={() => buy(2)}>Acquire Pre-Emptive Right</button>
-        </div>
+        <section className="purchase">
+          <button onClick={buy}>Acquire Pre-Emptive Right</button>
+        </section>
 
         <footer>
           <p>
-            By purchasing, you acknowledge that no property rights are granted under
-            current international law (Outer Space Treaty, 1967).
+            No ownership is granted. This service is speculative and subject to
+            future international legal frameworks (Outer Space Treaty, 1967).
           </p>
 
           <div className="socials">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=https://example.com" target="_blank">Facebook</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://lunar-preemptive-rights.vercel.app" target="_blank">Facebook</a>
             <a href="https://twitter.com/intent/tweet?text=The%20future%20of%20the%20Moon%20starts%20now" target="_blank">X</a>
             <a href="https://www.instagram.com/" target="_blank">Instagram</a>
           </div>
 
-          <p>© 2026 Lunar Pre-Emptive Rights. Conceptual initiative.</p>
+          <p className="copy">© 2026 Lunar Pre-Emptive Rights</p>
         </footer>
-      </div>
+      </main>
     </>
   );
 }
