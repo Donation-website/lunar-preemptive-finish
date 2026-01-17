@@ -1,5 +1,5 @@
 {
-  "name": "lunar-pre-emptive-rights",
+  "name": "lunar-preemptive-rights",
   "private": true,
   "scripts": {
     "dev": "next dev",
