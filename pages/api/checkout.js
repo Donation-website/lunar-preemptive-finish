@@ -1,11 +1,13 @@
-// pages/api/checkout.js
 import Stripe from "stripe";
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { parcelId } = req.body;
+    const { parcelId, price } = req.body;
+
+    if (!parcelId || !price) {
+      return res.status(400).json({ error: "Missing parcelId or price" });
+    }
 
     try {
       const session = await stripe.checkout.sessions.create({
@@ -15,7 +17,7 @@ export default async function handler(req, res) {
             price_data: {
               currency: "usd",
               product_data: { name: `Lunar Parcel ${parcelId}` },
-              unit_amount: 1000, // $10.00
+              unit_amount: price * 100, // USD cents
             },
             quantity: 1,
           },
