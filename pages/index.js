@@ -1,100 +1,91 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 
-// Demo parcels (90 parcel, random)
-const initialParcels = Array.from({ length: 90 }, (_, i) => ({
-  id: i + 1,
-  status: Math.random() < 0.3 ? "occupied" : "available",
-  holder: Math.random() < 0.3 ? "American Celestial Research Ltd." : null,
-  price: Math.floor(Math.random() * 5000) + 1000, // $1000-$6000
-}));
+const TOTAL_PARCELS = 90;
+const HEX_SIZE = 50; // px
+
+// 90 parcel előre definiálva
+const generateParcels = () => {
+  return Array.from({ length: TOTAL_PARCELS }, (_, i) => ({
+    id: i + 1,
+    status: Math.random() < 0.3 ? "occupied" : "available",
+    holder: Math.random() < 0.3 ? "American Celestial Research Ltd." : null,
+    price: Math.floor(Math.random() * 5000) + 1000,
+  }));
+};
 
 export default function Home() {
-  const [parcels, setParcels] = useState([]);
-  const [selectedParcel, setSelectedParcel] = useState(null);
+  const [parcels, setParcels] = useState(generateParcels());
+  const [selected, setSelected] = useState(null);
 
-  useEffect(() => {
-    const mapWidth = 1000;
-    const mapHeight = 500;
-    const hexSize = 30;
+  const handleParcelClick = (p) => {
+    if (p.status === "occupied") return;
+    setSelected(p);
+  };
 
-    function isOverlapping(x, y, others) {
-      return others.some(
-        (p) => Math.hypot(p.x - x, p.y - y) < hexSize * 2
-      );
-    }
-
-    const positioned = [];
-    initialParcels.forEach((p) => {
-      let x, y;
-      let attempts = 0;
-      do {
-        x = Math.random() * (mapWidth - hexSize * 2) + hexSize;
-        y = Math.random() * (mapHeight - hexSize * 2) + hexSize;
-        attempts++;
-      } while (isOverlapping(x, y, positioned) && attempts < 100);
-      positioned.push({ ...p, x, y });
-    });
-
-    setParcels(positioned);
-  }, []);
-
-  function handleParcelClick(parcel) {
-    if (parcel.status === "occupied") return;
-    setSelectedParcel(parcel);
-  }
+  // Grid layout: 10 hex per sor, 9 sor
+  const hexesPerRow = 10;
 
   return (
     <>
       <Head>
         <title>Lunar Pre-Emptive Rights</title>
       </Head>
-      <main style={{ textAlign: "center" }}>
+      <main style={{ textAlign: "center", paddingBottom: "50px" }}>
         <h1>Reserve Your Place on the Moon</h1>
-        <p>
-          Humanity is returning to the Moon. Secure a documented speculative
-          position today. No ownership granted under current law.
-        </p>
+        <p>Secure a documented speculative position today. No ownership granted.</p>
 
-        <div style={{ position: "relative", width: 1000, height: 500, margin: "auto" }}>
+        <div style={{ position: "relative", width: 1000, margin: "auto" }}>
           <Image
             src="/moon/moon-map.jpg"
-            alt="Moon map"
-            layout="fill"
-            objectFit="cover"
+            alt="Moon Map"
+            width={1000}
+            height={500}
+            style={{ objectFit: "cover" }}
           />
-          {parcels.map((p) => (
-            <div
-              key={p.id}
-              onClick={() => handleParcelClick(p)}
-              title={`Parcel #${p.id} - $${p.price}${p.status === "occupied" ? " (Occupied)" : ""}`}
-              style={{
-                position: "absolute",
-                width: 30,
-                height: 30,
-                left: p.x - 15,
-                top: p.y - 15,
-                clipPath: "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)", // hexagon
-                backgroundColor:
-                  p.status === "occupied"
-                    ? "red"
-                    : selectedParcel?.id === p.id
-                    ? "blue"
-                    : "green",
-                cursor: p.status === "occupied" ? "not-allowed" : "pointer",
-                border: "2px solid #fff",
-              }}
-            />
-          ))}
+
+          {parcels.map((p, idx) => {
+            const row = Math.floor(idx / hexesPerRow);
+            const col = idx % hexesPerRow;
+            const xOffset = HEX_SIZE * 0.75 * col;
+            const yOffset = HEX_SIZE * Math.sqrt(3)/2 * row;
+
+            return (
+              <div
+                key={p.id}
+                onClick={() => handleParcelClick(p)}
+                title={`Parcel #${p.id} - $${p.price}`}
+                style={{
+                  position: "absolute",
+                  width: HEX_SIZE,
+                  height: HEX_SIZE,
+                  left: xOffset,
+                  top: yOffset,
+                  clipPath:
+                    "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+                  backgroundColor:
+                    p.status === "occupied"
+                      ? "red"
+                      : selected?.id === p.id
+                      ? "blue"
+                      : "green",
+                  cursor: p.status === "occupied" ? "not-allowed" : "pointer",
+                  border: "2px solid #fff",
+                }}
+              />
+            );
+          })}
         </div>
 
-        {selectedParcel && (
+        {selected && (
           <div style={{ marginTop: 20 }}>
-            <h3>Selected Parcel #{selectedParcel.id}</h3>
-            <p>Price: ${selectedParcel.price}</p>
+            <h3>Selected Parcel #{selected.id}</h3>
+            <p>Price: ${selected.price}</p>
             <button
-              onClick={() => alert(`Proceed to checkout for parcel #${selectedParcel.id}`)}
+              onClick={() =>
+                alert(`Proceed to checkout for parcel #${selected.id}`)
+              }
             >
               Acquire Pre-Emptive Right
             </button>
