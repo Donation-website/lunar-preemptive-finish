@@ -1,76 +1,101 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 export default function Home() {
-  const [selectedParcel, setSelectedParcel] = useState(null)
-
-  // Példa parcellák a Hold térképen
   const parcels = [
-    { id: 1, top: '20%', left: '30%', status: 'Occupied', holder: 'American Celestial Research Ltd.' },
-    { id: 2, top: '50%', left: '60%', status: 'Available', holder: 'Unassigned' },
-  ]
+    { id: "001", status: "Occupied", holder: "American Celestial Research Ltd." },
+    { id: "002", status: "Available", holder: "Unassigned" },
+  ];
 
-  const handlePurchase = async () => {
+  const [selectedParcel, setSelectedParcel] = useState(null);
+
+  const handleParcelClick = (parcelId) => {
+    const parcel = parcels.find((p) => p.id === parcelId);
+    setSelectedParcel(parcel);
+  };
+
+  const handlePayment = async () => {
     if (!selectedParcel) {
-      alert('Please select a parcel first.')
-      return
+      alert("Please select a parcel first.");
+      return;
     }
-
-    const res = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ parcelId: selectedParcel.id })
-    })
-
-    const data = await res.json()
-    if (data.url) window.location.href = data.url
-    else alert('Payment initialization failed. Check your API key!')
-  }
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ parcelId: selectedParcel.id }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else alert("Payment initialization failed.");
+    } catch (err) {
+      console.error(err);
+      alert("Payment initialization failed. Check your API key!");
+    }
+  };
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h1>Reserve Your Place on the Moon</h1>
-      <p>Humanity is returning to the Moon. Legal frameworks will evolve. Secure a speculative pre-emptive position today.</p>
+    <div style={{ fontFamily: "Arial, sans-serif", textAlign: "center", padding: "20px" }}>
+      <h1>Reserve Your Place on the Moon 🌕</h1>
+      <p>Secure a speculative pre-emptive position today.</p>
 
       <h2>Lunar Surface Map</h2>
-      <div style={{ position: 'relative', display: 'inline-block' }}>
-        <img src="/moon.jpg" alt="Moon Map" style={{ width: '600px', height: '600px', borderRadius: '8px' }} />
-        {parcels.map(parcel => (
-          <div
-            key={parcel.id}
-            onClick={() => setSelectedParcel(parcel)}
-            style={{
-              position: 'absolute',
-              top: parcel.top,
-              left: parcel.left,
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: selectedParcel?.id === parcel.id ? 'lime' : parcel.status === 'Available' ? 'yellow' : 'red',
-              transform: 'translate(-50%, -50%)',
-              cursor: 'pointer',
-              border: '2px solid white'
-            }}
-            title={`Parcel #${parcel.id} - ${parcel.status} (${parcel.holder})`}
-          />
-        ))}
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <img src="/moon/moon-map.jpg" alt="Lunar Map" style={{ width: "600px", borderRadius: "10px" }} />
+        {parcels.map((parcel) => {
+          const positions = { "001": { top: 100, left: 150 }, "002": { top: 200, left: 400 } };
+          return (
+            <div
+              key={parcel.id}
+              onClick={() => handleParcelClick(parcel.id)}
+              style={{
+                position: "absolute",
+                top: positions[parcel.id].top,
+                left: positions[parcel.id].left,
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                backgroundColor: parcel.status === "Available" ? "rgba(0,255,0,0.5)" : "rgba(255,0,0,0.5)",
+                border: selectedParcel?.id === parcel.id ? "3px solid gold" : "none",
+                cursor: "pointer",
+              }}
+              title={`Parcel ${parcel.id} - ${parcel.status}`}
+            ></div>
+          );
+        })}
       </div>
 
-      <div style={{ marginTop: '20px' }}>
-        <button onClick={handlePurchase}>Acquire Pre-Emptive Right</button>
+      <div style={{ marginTop: "20px" }}>
+        <h3>Selected Parcel:</h3>
+        {selectedParcel ? (
+          <p>{selectedParcel.id} - {selectedParcel.status} - {selectedParcel.holder}</p>
+        ) : (
+          <p>None</p>
+        )}
       </div>
 
-      <p style={{ marginTop: '20px', fontSize: '14px' }}>
-        No ownership is granted under current international law (Outer Space Treaty, 1967).
-      </p>
+      <button
+        onClick={handlePayment}
+        style={{
+          padding: "10px 20px",
+          fontSize: "16px",
+          backgroundColor: "#1a73e8",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}
+      >
+        Acquire Pre-Emptive Right
+      </button>
 
-      <div className="footer">
-        <p>Share: 
-          <a href="https://www.facebook.com" target="_blank" style={{ margin: '0 5px' }}>Facebook</a> | 
-          <a href="https://www.instagram.com" target="_blank" style={{ margin: '0 5px' }}>Instagram</a> | 
-          <a href="https://twitter.com" target="_blank" style={{ margin: '0 5px' }}>X</a>
-        </p>
+      <footer style={{ marginTop: "50px", fontSize: "14px" }}>
+        <div>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={{ margin: "0 10px" }}>Facebook</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ margin: "0 10px" }}>Instagram</a>
+        </div>
         <p>© 2026 Lunar Pre-Emptive Rights. Conceptual initiative.</p>
-      </div>
+      </footer>
     </div>
-  )
+  );
 }
