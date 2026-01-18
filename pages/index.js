@@ -16,11 +16,11 @@ export default function Home() {
       <MoonScene />
 
       <div style={{ position: 'absolute', bottom: '20px', left: '20px', color: 'white', zIndex: 10 }}>
-        <button onClick={() => alert("ASZF lenyíló szöveg: ...")}>ASZF</button>
+        <button onClick={() => alert("Terms of Service dropdown: ...")}>Terms of Service</button>
       </div>
 
       <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: 'white', zIndex: 10 }}>
-        Rövid leírás: Válassz egy parcellát a Holdon, kattints a zöld területre, és a fizetés után email visszaigazolást kapsz.
+        Brief description: Select a lunar parcel. Click a green parcel to purchase. After payment, a confirmation email will be sent.
       </div>
     </div>
   )
