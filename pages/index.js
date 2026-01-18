@@ -8,19 +8,33 @@ export default function Home() {
       <h1>🌕 Lunar Pre-Emptive Rights – LIVE</h1>
 
       <div className="social-icons">
-        <img src="/social/facebook.png" alt="Facebook" />
-        <img src="/social/instagram.png" alt="Instagram" />
-        <img src="/social/x.png" alt="X" />
+        <a href="https://facebook.com" target="_blank">
+          <img src="/icons/fb.png" alt="Facebook" />
+        </a>
+        <a href="https://instagram.com" target="_blank">
+          <img src="/icons/insta.png" alt="Instagram" />
+        </a>
+        <a href="https://x.com" target="_blank">
+          <img src="/icons/x.png" alt="X" />
+        </a>
       </div>
 
       <MoonScene />
 
-      <div style={{ position: 'absolute', bottom: '20px', left: '20px', color: 'white', zIndex: 10 }}>
-        <button onClick={() => alert("Terms of Service dropdown: ...")}>Terms of Service</button>
+      <div className="description">
+        Select a green lunar parcel to acquire a speculative pre-emptive right.
+        Red parcels are already reserved.
       </div>
 
-      <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: 'white', zIndex: 10 }}>
-        Brief description: Select a lunar parcel. Click a green parcel to purchase. After payment, a confirmation email will be sent.
+      <div className="tos">
+        <details>
+          <summary>Terms of Service</summary>
+          <p>
+            No ownership rights are granted. This project is conceptual and
+            subject to future international legal frameworks, including the
+            Outer Space Treaty (1967).
+          </p>
+        </details>
       </div>
     </div>
   )
