@@ -1,10 +1,9 @@
-// pages/api/checkout.js
-import Stripe from 'stripe';
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+import Stripe from 'stripe'
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { parcel } = req.body;
+    const { parcelId, price, email } = req.body
 
     try {
       const session = await stripe.checkout.sessions.create({
@@ -13,24 +12,24 @@ export default async function handler(req, res) {
           {
             price_data: {
               currency: 'usd',
-              product_data: { name: `Parcel #${parcel.id}` },
-              unit_amount: parcel.price * 100,
+              product_data: { name: `Parcel #${parcelId}` },
+              unit_amount: price * 100
             },
-            quantity: 1,
-          },
+            quantity: 1
+          }
         ],
         mode: 'payment',
-        success_url: `${req.headers.origin}/?success=true&parcel=${parcel.id}`,
+        success_url: `${req.headers.origin}/?success=true`,
         cancel_url: `${req.headers.origin}/?canceled=true`,
-      });
+        customer_email: email
+      })
 
-      res.status(200).json({ url: session.url });
+      res.status(200).json({ id: session.id })
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message })
     }
   } else {
-    res.setHeader('Allow', 'POST');
-    res.status(405).end('Method Not Allowed');
+    res.setHeader('Allow', 'POST')
+    res.status(405).end('Method Not Allowed')
   }
 }
