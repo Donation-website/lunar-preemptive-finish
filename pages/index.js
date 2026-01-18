@@ -1,20 +1,25 @@
-// pages/index.js
 import dynamic from 'next/dynamic'
 
 const MoonScene = dynamic(() => import('../components/MoonScene'), { ssr: false })
 
 export default function Home() {
   return (
-    <div style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
-      <h1 style={{
-        position: 'absolute',
-        zIndex: 10,
-        color: 'white',
-        padding: '20px'
-      }}>
-        🌕 Lunar Pre-Emptive Rights – LIVE
-      </h1>
+    <div>
+      <h1>🌕 Lunar Pre-Emptive Rights – LIVE</h1>
       <MoonScene />
+
+      <div className="aszf-container">
+        <details>
+          <summary>ÁSZF</summary>
+          <p>Ez a szolgáltatás spekulatív és nem biztosít tulajdonjogot a Holdon. A vásárlásodat dokumentáltan rögzítjük a jövőbeli jogszabályi változások reményében.</p>
+        </details>
+      </div>
+
+      <div className="social-icons">
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">FB</a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">IG</a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">X</a>
+      </div>
     </div>
   )
 }
