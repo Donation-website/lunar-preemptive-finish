@@ -1,15 +1,24 @@
+import Head from "next/head";
+import dynamic from "next/dynamic";
+
+const MoonScene = dynamic(() => import("../components/MoonScene"), {
+  ssr: false,
+});
+
 export default function Home() {
   return (
-    <main style={{
-      minHeight: '100vh',
-      background: '#000',
-      color: '#fff',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily: 'Arial'
-    }}>
-      <h1>🌕 Lunar Pre-Emptive Rights – LIVE</h1>
-    </main>
+    <>
+      <Head>
+        <title>Lunar Pre-Emptive Rights</title>
+        <meta
+          name="description"
+          content="Secure a speculative pre-emptive position on the Moon. A future-facing conceptual initiative."
+        />
+      </Head>
+
+      <main style={{ width: "100vw", height: "100vh", background: "black" }}>
+        <MoonScene />
+      </main>
+    </>
   );
 }
