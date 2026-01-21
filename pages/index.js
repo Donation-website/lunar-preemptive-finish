@@ -1,23 +1,30 @@
 import dynamic from 'next/dynamic'
+import Head from 'next/head'
 
-const MoonScene = dynamic(
-  () => import('../components/MoonScene'),
-  { ssr: false }
-)
+const MoonScene = dynamic(() => import('../components/MoonScene'), { ssr: false })
 
 export default function Home() {
   return (
-    <div style={{ margin: 0, padding: 0 }}>
-      <h1 style={{
-        position: 'absolute',
-        zIndex: 10,
-        color: 'white',
-        padding: '20px'
-      }}>
-        🌕 Lunar Pre-Emptive Rights – LIVE
-      </h1>
+    <>
+      <Head>
+        <title>Lunar Pre-Emptive Rights – LIVE</title>
+      </Head>
+
+      <h1>🌕 Lunar Pre-Emptive Rights – LIVE</h1>
 
       <MoonScene />
-    </div>
+
+      <div className="social-icons">
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/fb.png" alt="Facebook"/>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/insta.png" alt="Instagram"/>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/x.png" alt="X"/>
+        </a>
+      </div>
+    </>
   )
 }
