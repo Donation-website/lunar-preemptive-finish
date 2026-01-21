@@ -37,11 +37,17 @@ function Parcels() {
   const handleClick = (parcel) => {
     if (parcel.color === 'lime') {
       setSelected(parcel.index)
-      window.location.href = `/api/checkout?parcel=${parcel.index}` // checkout link
+      const email = prompt("Enter your email for certificate:")
+      fetch(`/api/checkout?parcel=${parcel.index}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      }).then(res => res.json())
+        .then(data => { window.location.href = data.url })
     }
   }
 
-  return parcels.map((parcel) => (
+  return parcels.map(parcel => (
     <mesh
       key={parcel.index}
       position={parcel.pos}
@@ -62,7 +68,7 @@ export default function MoonScene() {
   return (
     <Canvas camera={{ position: [0, 0, 6], fov: 50 }} style={{ width: '100vw', height: '100vh' }}>
       <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 5, 5]} intensity={1} />
+      <directionalLight position={[5,5,5]} intensity={1} />
       <Moon />
       <Parcels />
       <OrbitControls enableZoom enableRotate />
